@@ -179,4 +179,20 @@ if st.button("Hitung Akar"):
     # GRAPH
     # =================================================
     with st.container():
-        st.markdown("<div class='card'>", uns
+        st.markdown("<div class='card'>", unsafe_allow_html=True)
+        st.subheader("Grafik Fungsi dan Akar")
+
+        x_plot = np.linspace(df["a"].min(), df["b"].max(), 400)
+        y_plot = f_func(x_plot)
+
+        fig, ax = plt.subplots()
+        ax.axhline(0)
+        ax.plot(x_plot, y_plot)
+        ax.scatter(df["c (akar)"], df["f(c)"])
+
+        ax.set_facecolor(CARD)
+        fig.patch.set_facecolor(CARD)
+        ax.tick_params(colors=TEXT)
+
+        st.pyplot(fig)
+        st.markdown("</div>", unsafe_allow_html=True)
