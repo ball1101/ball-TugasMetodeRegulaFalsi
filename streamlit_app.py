@@ -16,59 +16,55 @@ with st.sidebar:
 # WARNA TEMA
 # ============================
 if mode:
-    bg = "#020617"
-    sidebar = "#020617"
-    topbar = "#020617"
-    text = "#f8fafc"
+    bg = "#0b1e3a"
+    sidebar = "#102a4c"
+    topbar = "#0b1e3a"
+    text = "#e0f2ff"
     accent = "#38bdf8"
-    border = "#1e293b"
-    input_bg = "#020617"
-    button = "#0284c7"
+    border = "#1e3a5f"
+    input_bg = "#102a4c"
+    button = "#2563eb"
     switch_on = "#38bdf8"
-    switch_off = "#334155"
-    collapse_color = "#ffffff"   # <<< PUTIH saat Dark Mode
+    switch_off = "#1e3a5f"
+    collapse_color = "#ffffff"
 else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
     topbar = "#ffffff"
     text = "#020617"
-    accent = "#0284c7"
+    accent = "#2563eb"
     border = "#cbd5e1"
     input_bg = "#ffffff"
-    button = "#0284c7"
-    switch_on = "#0284c7"
+    button = "#2563eb"
+    switch_on = "#2563eb"
     switch_off = "#94a3b8"
-    collapse_color = "#020617"   # <<< Hitam saat Light Mode
+    collapse_color = "#020617"
 
 # ============================
-# CSS GLOBAL
+# CSS
 # ============================
 st.markdown(f"""
 <style>
 
-/* ===== PAGE ===== */
 html, body, [data-testid="stAppViewContainer"] {{
     background: {bg};
     color: {text};
 }}
 
-/* ===== TOP BAR ===== */
 header[data-testid="stHeader"] {{
     background: {topbar};
     border-bottom: 1px solid {border};
 }}
 
-/* ===== SIDEBAR ===== */
 [data-testid="stSidebar"] {{
     background: {sidebar};
     border-right: 1px solid {border};
 }}
 
-h1, h2, h3, h4, label {{
+h1,h2,h3,h4,label {{
     color: {text} !important;
 }}
 
-/* ===== INPUT ===== */
 .stTextInput input,
 .stNumberInput input {{
     background: {input_bg};
@@ -77,30 +73,22 @@ h1, h2, h3, h4, label {{
     border-radius: 10px;
 }}
 
-/* ===== SLIDER ===== */
 .stSlider > div > div > div > div {{
     background-color: {accent};
 }}
 
-/* ===== BUTTON ===== */
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
     color: white;
     border-radius: 16px;
     padding: 14px 38px;
-    font-size: 16px;
     font-weight: 700;
     border: none;
-    box-shadow: 0 0 15px rgba(56,189,248,0.6);
+    box-shadow: 0 0 15px rgba(56,189,248,0.5);
 }}
 
-/* ===== TOGGLE ===== */
 div[data-baseweb="switch"] > div {{
     background-color: {switch_off};
-}}
-
-div[data-baseweb="switch"] span {{
-    background-color: white !important;
 }}
 
 div[data-baseweb="switch"]:has(input:checked) > div {{
@@ -108,20 +96,14 @@ div[data-baseweb="switch"]:has(input:checked) > div {{
     box-shadow: 0 0 10px {switch_on};
 }}
 
-/* ===== SIDEBAR COLLAPSE ICON < ===== */
 button[data-testid="collapsedControl"] svg {{
     stroke: {collapse_color} !important;
 }}
 
 button[data-testid="collapsedControl"] {{
-    background: transparent !important;
     border: 1px solid {border};
     border-radius: 8px;
     padding: 4px;
-}}
-
-button[data-testid="collapsedControl"]:hover {{
-    background: rgba(255,255,255,0.1);
 }}
 
 </style>
@@ -149,18 +131,16 @@ iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 # ============================
 if st.button("🔍 Hitung Akar"):
     try:
-        def f(x):
-            return eval(fx)
+        def f(x): return eval(fx)
 
         data = []
         a0, b0 = a, b
 
         for i in range(iterasi):
             fa, fb = f(a), f(b)
-            c = (a * fb - b * fa) / (fb - fa)
+            c = (a*fb - b*fa) / (fb - fa)
             fc = f(c)
             data.append([i+1, a, b, c, fc])
-
             if fa * fc < 0:
                 b = c
             else:
@@ -171,14 +151,14 @@ if st.button("🔍 Hitung Akar"):
 
         st.success(f"🎯 Akar hampiran = {c}")
 
-        x = np.linspace(a0 - 2, b0 + 2, 500)
+        x = np.linspace(a0-2, b0+2, 500)
         y = [f(i) for i in x]
 
         fig, ax = plt.subplots(figsize=(10,5))
         ax.plot(x, y)
         ax.axhline(0)
         ax.scatter(c, f(c))
-        ax.set_title("Grafik f(x) dan Titik Akar")
+        ax.set_title("Grafik f(x)")
 
         st.pyplot(fig, use_container_width=True)
 
