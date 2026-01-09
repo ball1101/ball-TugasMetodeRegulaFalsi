@@ -159,7 +159,14 @@ if st.button("🔍 Hitung Akar"):
         ax.axhline(0, color=plot_line, linewidth=1.5)
         ax.scatter(c, f(c), color="#ef4444", s=80)
 
-        ax.set_title("Grafik f(x) dan Titik Akar")
+        ax.set_title(
+        "Grafik f(x) dan Titik Akar",
+        color=plot_line,
+        fontsize=14,
+        fontweight="bold",
+        pad=12
+    )  
+
         ax.tick_params(colors=plot_line)
         ax.spines["bottom"].set_color(plot_line)
         ax.spines["left"].set_color(plot_line)
