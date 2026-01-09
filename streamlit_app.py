@@ -1,165 +1,160 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import math
+import sympy as sp
 
-# =============================
-# CUSTOM CSS
-# =============================
-st.markdown("""
+# =========================
+# PAGE CONFIG
+# =========================
+st.set_page_config(
+    page_title="Kalkulator SPNL - Regula Falsi",
+    layout="centered"
+)
+
+# =========================
+# SESSION STATE
+# =========================
+if "dark_mode" not in st.session_state:
+    st.session_state.dark_mode = False
+
+# =========================
+# SIDEBAR - DARK MODE
+# =========================
+with st.sidebar:
+    st.session_state.dark_mode = st.toggle("🌙 Dark Mode")
+
+# =========================
+# CUSTOM CSS (FIX KOTAK PUTIH)
+# =========================
+if st.session_state.dark_mode:
+    bg = "#0E1117"
+    text = "#FAFAFA"
+    card = "#1E1E1E"
+else:
+    bg = "#F6F7FB"
+    text = "#2E2E2E"
+    card = "#FFFFFF"
+
+st.markdown(f"""
 <style>
-    body {
-        background: #f4f7f9;
-    }
-    h1 {
-        font-family: 'Georgia', serif !important;
-        text-align: center;
-        color: #1976D2;
-        margin-bottom: 30px;
-    }
-    .card {
-        padding: 20px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0px 3px 12px rgba(0,0,0,0.15);
-        margin-bottom: 25px;
-    }
+
+/* RESET BODY */
+html, body, [class*="css"] {{
+    background-color: {bg} !important;
+    color: {text} !important;
+}}
+
+/* HILANGKAN PADDING UTAMA */
+.block-container {{
+    padding-top: 1.5rem !important;
+    padding-bottom: 0rem !important;
+}}
+
+/* HILANGKAN CONTAINER KOSONG */
+.stContainer:empty {{
+    display: none !important;
+}}
+
+/* HILANGKAN MARKDOWN KOSONG */
+.stMarkdown:empty {{
+    display: none !important;
+}}
+
+/* CARD STYLE */
+.card {{
+    background: {card};
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}}
+
+/* INPUT */
+input {{
+    border-radius: 12px !important;
+}}
+
+/* HILANGKAN WHITE STRIP PALING SERING MUNCUL */
+div[data-testid="stVerticalBlock"] > div:empty {{
+    display: none !important;
+}}
+
 </style>
 """, unsafe_allow_html=True)
 
-# =============================
+# =========================
 # TITLE
-# =============================
-st.markdown("<h1>Kalkulator SPNL - Metode Regula Falsi</h1>", unsafe_allow_html=True)
-
-# =============================
-# INPUT FUNGSI
-# =============================
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.subheader("Step 1: Masukkan Persamaan f(x)")
-fungsi = st.text_input(
-    "Contoh: x**3 - x - 2\nGunakan math / np jika perlu",
-    value="x**3 - x - 2"
+# =========================
+st.markdown(
+    "<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi</h1>",
+    unsafe_allow_html=True
 )
-st.markdown("</div>", unsafe_allow_html=True)
 
-# =============================
-# INTERVAL
-# =============================
+# =========================
+# STEP 1
+# =========================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.subheader("Step 2: Pilih Interval")
 
-col1, col2 = st.columns(2)
-with col1:
-    a = st.number_input("a", value=1.0)
-with col2:
-    b = st.number_input("b", value=2.0)
+st.subheader("Step 1: Masukkan Persamaan f(x)")
+st.caption("Contoh: x**3 - x - 2")
 
-def f(x):
-    try:
-        return eval(fungsi, {"x": x, "np": np, "math": math})
-    except:
-        return np.nan
-
-fa, fb = f(a), f(b)
-st.write(f"f(a) = {fa}")
-st.write(f"f(b) = {fb}")
-
-valid_interval = fa * fb < 0
-if valid_interval:
-    st.success("Interval valid ✓")
-else:
-    st.error("Interval tidak valid")
+fungsi_input = st.text_input(
+    "Persamaan f(x)",
+    value="x**3 - x - 2",
+    label_visibility="collapsed"
+)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-# =============================
-# PARAMETER
-# =============================
+# =========================
+# STEP 2
+# =========================
 st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.subheader("Step 3: Pengaturan Lanjut")
 
-col1, col2 = st.columns(2)
-with col1:
-    max_iter = st.number_input("Maksimum Iterasi", value=50)
-with col2:
-    tol = st.number_input("Toleransi Error", value=1e-6, format="%.10f")
+st.subheader("Step 2: Interval Awal")
+a = st.number_input("Nilai a", value=1.0)
+b = st.number_input("Nilai b", value=2.0)
 
-hitung_button = st.button("Hitung Akar")
 st.markdown("</div>", unsafe_allow_html=True)
 
-# =============================
-# REGULA FALSI
-# =============================
-if hitung_button and valid_interval:
+# =========================
+# STEP 3
+# =========================
+st.markdown("<div class='card'>", unsafe_allow_html=True)
 
-    a0, b0 = a, b
-    fa, fb = f(a0), f(b0)
-    xr_old = a0
-    data_iterasi = []
+st.subheader("Step 3: Iterasi")
+max_iter = st.slider("Jumlah Iterasi", 1, 50, 10)
 
-    for i in range(1, int(max_iter) + 1):
-        xr = (a0 * fb - b0 * fa) / (fb - fa)
-        fxr = f(xr)
-        error = abs(xr - xr_old)
+st.markdown("</div>", unsafe_allow_html=True)
 
-        data_iterasi.append([i, a0, b0, xr, fxr, error])
+# =========================
+# PROSES
+# =========================
+if st.button("Hitung Akar"):
+    x = sp.symbols("x")
+    f = sp.sympify(fungsi_input)
+    f_func = sp.lambdify(x, f)
 
-        if error < tol:
-            break
+    hasil = []
+    for i in range(max_iter):
+        fa = f_func(a)
+        fb = f_func(b)
+        c = b - fb * (b - a) / (fb - fa)
+        fc = f_func(c)
 
-        if fa * fxr < 0:
-            b0, fb = xr, fxr
+        hasil.append([i+1, a, b, c, fc])
+
+        if fa * fc < 0:
+            b = c
         else:
-            a0, fa = xr, fxr
+            a = c
 
-        xr_old = xr
-
-    # =============================
-    # HASIL
-    # =============================
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("Hasil Perhitungan")
-    st.success(f"""
-    **Akar mendekati:** {xr}  
-    **Error akhir:** {error}  
-    **Total iterasi:** {len(data_iterasi)}
-    """)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # =============================
-    # TABEL ITERASI
-    # =============================
     df = pd.DataFrame(
-        data_iterasi,
-        columns=["Iterasi", "a", "b", "xr", "f(xr)", "Error"]
+        hasil,
+        columns=["Iterasi", "a", "b", "c", "f(c)"]
     )
 
     st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("Tabel Iterasi")
+    st.subheader("Hasil Iterasi")
     st.dataframe(df, use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # =============================
-    # GRAFIK (STREAMLIT NATIVE)
-    # =============================
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("Grafik Fungsi f(x)")
-
-    x_vals = np.linspace(a - 2, b + 2, 400)
-    y_vals = [f(x) for x in x_vals]
-
-    df_plot = pd.DataFrame({
-        "x": x_vals,
-        "f(x)": y_vals
-    })
-
-    st.line_chart(df_plot.set_index("x"))
-
-    st.markdown(f"""
-    **Titik Akar:**  
-    x = `{xr}`  
-    f(x) = `{f(xr)}`
-    """)
-
     st.markdown("</div>", unsafe_allow_html=True)
