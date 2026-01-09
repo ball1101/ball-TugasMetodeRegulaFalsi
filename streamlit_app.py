@@ -16,26 +16,26 @@ mode = st.toggle("🌙 Dark Mode", value=True)
 if mode:  # DARK MODE
     bg = "#020617"
     sidebar = "#020617"
-    card = "#020617"
     text = "#f8fafc"
     muted = "#94a3b8"
     accent = "#38bdf8"
     border = "#1e293b"
+    input_bg = "#020617"
     button = "#0284c7"
     button_text = "#ffffff"
-else:  # LIGHT MODE
+else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
-    card = "#ffffff"
     text = "#020617"
     muted = "#475569"
     accent = "#0284c7"
     border = "#cbd5e1"
+    input_bg = "#ffffff"
     button = "#0284c7"
     button_text = "#ffffff"
 
 # ============================
-# CSS PROFESIONAL
+# GLOBAL CSS
 # ============================
 st.markdown(f"""
 <style>
@@ -49,7 +49,7 @@ html, body, [data-testid="stAppViewContainer"] {{
     border-right: 1px solid {border};
 }}
 
-h1, h2, h3, h4, h5 {{
+h1, h2, h3, h4 {{
     color: {text};
 }}
 
@@ -59,7 +59,7 @@ label, p, span, div {{
 
 .stTextInput input,
 .stNumberInput input {{
-    background-color: {card};
+    background: {input_bg};
     color: {text};
     border: 1px solid {border};
     border-radius: 10px;
@@ -69,42 +69,30 @@ label, p, span, div {{
     background-color: {accent};
 }}
 
+.stDataFrame {{
+    background: {bg};
+}}
+
 .stButton button {{
-    background: {button};
+    background: linear-gradient(135deg, {button}, {accent});
     color: {button_text};
-    border-radius: 14px;
-    padding: 12px 32px;
+    border-radius: 16px;
+    padding: 14px 38px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     border: none;
-    box-shadow: 0 0 12px rgba(56,189,248,0.4);
+    box-shadow: 0 0 15px rgba(56,189,248,0.6);
 }}
 
 .stButton button:hover {{
-    background: {accent};
-    box-shadow: 0 0 18px rgba(56,189,248,0.8);
-    transform: scale(1.03);
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(56,189,248,1);
 }}
 
-.card {{
-    background: {card};
-    padding: 30px;
-    border-radius: 20px;
+hr {{
     border: 1px solid {border};
 }}
 
-.toggle-box {{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: {text};
-    font-weight: 600;
-    font-size: 16px;
-}}
-
-.toggle-label {{
-    color: {text};
-}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -112,22 +100,18 @@ label, p, span, div {{
 # SIDEBAR
 # ============================
 with st.sidebar:
-    st.markdown("<h3>⚙️ Pengaturan</h3>", unsafe_allow_html=True)
-    st.markdown(
-        f"<div class='toggle-box'><span class='toggle-label'>🌙 Dark Mode</span></div>",
-        unsafe_allow_html=True
-    )
+    st.markdown("## ⚙️ Pengaturan")
+    st.markdown("🌙 **Dark Mode**")
 
 # ============================
 # JUDUL
 # ============================
 st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi</h1>", unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)
 
 # ============================
-# FORM INPUT
+# INPUT
 # ============================
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-
 st.markdown("### Input Persamaan")
 fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
 
@@ -142,7 +126,7 @@ iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ============================
-# TOMBOL HITUNG (YANG DILINGKARI)
+# TOMBOL
 # ============================
 if st.button("🔍 Hitung Akar"):
     try:
@@ -165,9 +149,7 @@ if st.button("🔍 Hitung Akar"):
         df = pd.DataFrame(data, columns=["Iterasi","a","b","c","f(c)"])
         st.dataframe(df, use_container_width=True)
 
-        st.success(f"Akar hampiran = {c}")
+        st.success(f"🎯 Akar hampiran = {c}")
 
     except:
-        st.error("Fungsi tidak valid")
-
-st.markdown("</div>", unsafe_allow_html=True)
+        st.error("❌ Fungsi tidak valid")
