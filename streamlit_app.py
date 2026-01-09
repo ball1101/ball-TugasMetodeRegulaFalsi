@@ -1,139 +1,135 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
-import sympy as sp
-import matplotlib.pyplot as plt
+import pandas as pd
+import math
 
-# =====================================================
-# PAGE CONFIG
-# =====================================================
-st.set_page_config(
-    page_title="Kalkulator SPNL - Regula Falsi",
-    layout="wide"
-)
+st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 
-# =====================================================
-# SESSION STATE
-# =====================================================
-if "dark_mode" not in st.session_state:
-    st.session_state.dark_mode = False
+# ============================
+# TOGGLE MODE
+# ============================
+mode = st.toggle("🌙 Dark Mode", value=True)
 
-# =====================================================
-# SIDEBAR
-# =====================================================
-with st.sidebar:
-    st.markdown("## Pengaturan")
-    st.session_state.dark_mode = st.toggle("🌙 Dark Mode")
+# ============================
+# WARNA TEMA
+# ============================
+if mode:  # DARK MODE
+    bg = "#020617"
+    sidebar = "#020617"
+    card = "#020617"
+    text = "#f8fafc"
+    muted = "#94a3b8"
+    accent = "#38bdf8"
+    border = "#1e293b"
+    button = "#0284c7"
+    button_text = "#ffffff"
+else:  # LIGHT MODE
+    bg = "#f8fafc"
+    sidebar = "#ffffff"
+    card = "#ffffff"
+    text = "#020617"
+    muted = "#475569"
+    accent = "#0284c7"
+    border = "#cbd5e1"
+    button = "#0284c7"
+    button_text = "#ffffff"
 
-# =====================================================
-# THEME COLOR (HIGH CONTRAST)
-# =====================================================
-if st.session_state.dark_mode:
-    # DARK MODE – NAVY (HIGH CONTRAST)
-    BG = "#0b1c2d"
-    TEXT = "#f1f5f9"        # hampir putih
-    TEXT_MUTED = "#cbd5e1"
-    ACCENT = "#60a5fa"
-    BORDER = "#1e3a5f"
-    GRID = "#334155"
-else:
-    # LIGHT MODE – CLEAN
-    BG = "#f3f5f9"
-    TEXT = "#111827"        # hitam lembut
-    TEXT_MUTED = "#374151"
-    ACCENT = "#2563eb"
-    BORDER = "#d1d5db"
-    GRID = "#9ca3af"
-
-# =====================================================
-# CSS (TEKS TERBACA DI SEMUA MODE)
-# =====================================================
+# ============================
+# CSS PROFESIONAL
+# ============================
 st.markdown(f"""
 <style>
-
-/* GLOBAL */
 html, body, [data-testid="stAppViewContainer"] {{
-    background-color: {BG};
-    color: {TEXT};
+    background: {bg};
+    color: {text};
 }}
 
-/* HEADER */
-[data-testid="stHeader"] {{
-    background: transparent;
-}}
-
-/* MAIN CONTAINER */
-.block-container {{
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-}}
-
-/* SIDEBAR */
 [data-testid="stSidebar"] {{
-    background-color: {BG};
-    border-right: 1px solid {BORDER};
+    background: {sidebar};
+    border-right: 1px solid {border};
 }}
 
-/* HEADINGS */
-h1, h2, h3, h4 {{
-    color: {TEXT};
+h1, h2, h3, h4, h5 {{
+    color: {text};
 }}
 
-/* PARAGRAPH & LABEL */
-p, label, span {{
-    color: {TEXT_MUTED};
+label, p, span, div {{
+    color: {text};
 }}
 
-/* INPUT & SELECT */
-input, textarea, select {{
-    color: {TEXT} !important;
-    background-color: transparent !important;
+.stTextInput input,
+.stNumberInput input {{
+    background-color: {card};
+    color: {text};
+    border: 1px solid {border};
+    border-radius: 10px;
 }}
 
-/* BUTTON */
-button[kind="primary"] {{
-    background-color: {ACCENT};
-    color: white;
-    border-radius: 8px;
+.stSlider > div > div > div > div {{
+    background-color: {accent};
 }}
 
-/* DATAFRAME */
-[data-testid="stDataFrame"] {{
-    color: {TEXT};
+.stButton button {{
+    background: {button};
+    color: {button_text};
+    border-radius: 14px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 0 12px rgba(56,189,248,0.4);
 }}
 
-/* DIVIDER */
-hr {{
-    border-color: {BORDER};
+.stButton button:hover {{
+    background: {accent};
+    box-shadow: 0 0 18px rgba(56,189,248,0.8);
+    transform: scale(1.03);
 }}
 
-/* FOOTER */
-footer {{
-    display: none;
+.card {{
+    background: {card};
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid {border};
 }}
 
+.toggle-box {{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: {text};
+    font-weight: 600;
+    font-size: 16px;
+}}
+
+.toggle-label {{
+    color: {text};
+}}
 </style>
 """, unsafe_allow_html=True)
 
-# =====================================================
-# TITLE
-# =====================================================
-st.markdown(
-    "<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi</h1>",
-    unsafe_allow_html=True
-)
+# ============================
+# SIDEBAR
+# ============================
+with st.sidebar:
+    st.markdown("<h3>⚙️ Pengaturan</h3>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='toggle-box'><span class='toggle-label'>🌙 Dark Mode</span></div>",
+        unsafe_allow_html=True
+    )
 
-st.divider()
+# ============================
+# JUDUL
+# ============================
+st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi</h1>", unsafe_allow_html=True)
 
-# =====================================================
-# INPUT SECTION
-# =====================================================
-st.subheader("Input Persamaan")
+# ============================
+# FORM INPUT
+# ============================
+st.markdown("<div class='card'>", unsafe_allow_html=True)
 
-fungsi_input = st.text_input(
-    "Masukkan fungsi f(x)",
-    value="x**3 - x - 2"
-)
+st.markdown("### Input Persamaan")
+fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
 
 col1, col2 = st.columns(2)
 with col1:
@@ -141,65 +137,37 @@ with col1:
 with col2:
     b = st.number_input("Nilai b", value=2.0)
 
-max_iter = st.slider("Jumlah Iterasi", 1, 50, 10)
+iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 
-st.divider()
+st.markdown("<br>", unsafe_allow_html=True)
 
-# =====================================================
-# PROCESS
-# =====================================================
-if st.button("Hitung Akar"):
-    x = sp.symbols("x")
-    f = sp.sympify(fungsi_input)
-    f_func = sp.lambdify(x, f, "numpy")
+# ============================
+# TOMBOL HITUNG (YANG DILINGKARI)
+# ============================
+if st.button("🔍 Hitung Akar"):
+    try:
+        def f(x):
+            return eval(fx)
 
-    hasil = []
-    for i in range(max_iter):
-        fa = f_func(a)
-        fb = f_func(b)
-        c = b - fb * (b - a) / (fb - fa)
-        fc = f_func(c)
+        data = []
+        for i in range(iterasi):
+            fa, fb = f(a), f(b)
+            c = (a * fb - b * fa) / (fb - fa)
+            fc = f(c)
 
-        hasil.append([i + 1, a, b, c, fc])
+            data.append([i+1, a, b, c, fc])
 
-        if fa * fc < 0:
-            b = c
-        else:
-            a = c
+            if fa * fc < 0:
+                b = c
+            else:
+                a = c
 
-    df = pd.DataFrame(
-        hasil,
-        columns=["Iterasi", "a", "b", "c (akar)", "f(c)"]
-    )
+        df = pd.DataFrame(data, columns=["Iterasi","a","b","c","f(c)"])
+        st.dataframe(df, use_container_width=True)
 
-    # =================================================
-    # TABLE
-    # =================================================
-    st.subheader("Tabel Iterasi")
-    st.dataframe(df, use_container_width=True)
+        st.success(f"Akar hampiran = {c}")
 
-    st.divider()
+    except:
+        st.error("Fungsi tidak valid")
 
-    # =================================================
-    # GRAPH
-    # =================================================
-    st.subheader("Grafik Fungsi dan Akar")
-
-    x_plot = np.linspace(df["a"].min(), df["b"].max(), 400)
-    y_plot = f_func(x_plot)
-
-    fig, ax = plt.subplots()
-    ax.axhline(0, color=GRID)
-    ax.plot(x_plot, y_plot, color=ACCENT)
-    ax.scatter(df["c (akar)"], df["f(c)"], color="red")
-
-    ax.set_facecolor(BG)
-    fig.patch.set_facecolor(BG)
-
-    ax.tick_params(colors=TEXT)
-    ax.spines["bottom"].set_color(TEXT)
-    ax.spines["left"].set_color(TEXT)
-
-    ax.grid(True, color=GRID, alpha=0.4)
-
-    st.pyplot(fig)
+st.markdown("</div>", unsafe_allow_html=True)
