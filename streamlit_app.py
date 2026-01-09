@@ -12,6 +12,10 @@ st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 with st.sidebar:
     st.markdown("## ⚙️ Pengaturan")
     mode = st.toggle("🌙 Dark Mode", value=True)
+    st.markdown("---")
+    st.markdown("📊 **Ukuran Grafik**")
+    fig_w = st.slider("Lebar Grafik", 4, 16, 8)
+    fig_h = st.slider("Tinggi Grafik", 3, 12, 5)
 
 # ============================
 # WARNA TEMA
@@ -38,7 +42,7 @@ else:
     switch_off = "#94a3b8"
 
 # ============================
-# CSS GLOBAL
+# CSS
 # ============================
 st.markdown(f"""
 <style>
@@ -79,11 +83,6 @@ h1, h2, h3, h4, label {{
     box-shadow: 0 0 15px rgba(56,189,248,0.6);
 }}
 
-.stButton button:hover {{
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(56,189,248,1);
-}}
-
 div[data-baseweb="switch"] > div {{
     background-color: {switch_off};
 }}
@@ -92,7 +91,7 @@ div[data-baseweb="switch"] span {{
     background-color: white !important;
 }}
 
-div[data-baseweb=" թվական switch"]:has(input:checked) > div {{
+div[data-baseweb="switch"]:has(input:checked) > div {{
     background-color: {switch_on};
     box-shadow: 0 0 10px {switch_on};
 }}
@@ -107,7 +106,6 @@ button[data-testid="collapsedControl"] {{
     border-radius: 8px;
     padding: 4px;
 }}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -129,7 +127,7 @@ with col2:
 iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 
 # ============================
-# HITUNG & GRAFIK
+# HITUNG
 # ============================
 if st.button("🔍 Hitung Akar"):
     try:
@@ -159,7 +157,7 @@ if st.button("🔍 Hitung Akar"):
         x = np.linspace(a0-2, b0+2, 400)
         y = [f(i) for i in x]
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
         ax.plot(x, y)
         ax.axhline(0)
         ax.scatter(c, f(c))
@@ -167,5 +165,5 @@ if st.button("🔍 Hitung Akar"):
 
         st.pyplot(fig)
 
-    except Exception as e:
+    except Exception:
         st.error("❌ Fungsi tidak valid")
