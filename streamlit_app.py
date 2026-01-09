@@ -168,7 +168,7 @@ iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 # ============================
 # HITUNG
 # ============================
-if st.button("🔍 Hitung Akar"):
+if st.button("📊 Hitung Akar"):
     try:
         def f(x): return eval(fx)
 
