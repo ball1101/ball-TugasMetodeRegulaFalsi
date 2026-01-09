@@ -30,26 +30,24 @@ with st.sidebar:
 # =====================================================
 if st.session_state.dark_mode:
     # DARK MODE – NAVY
-    BG = "#0b1c2d"        # navy gelap
-    CARD = "#12263f"      # navy card
-    TEXT = "#e6f0ff"      # putih kebiruan
-    ACCENT = "#4da3ff"    # biru accent
+    BG = "#0b1c2d"
+    TEXT = "#e6f0ff"
+    ACCENT = "#4da3ff"
     BORDER = "#1e3a5f"
 else:
-    # LIGHT MODE – CLEAN
-    BG = "#f3f5f9"        # abu terang
-    CARD = "#ffffff"     # putih
-    TEXT = "#1f2937"     # abu gelap
-    ACCENT = "#2563eb"   # biru
+    # LIGHT MODE
+    BG = "#f3f5f9"
+    TEXT = "#1f2937"
+    ACCENT = "#2563eb"
     BORDER = "#e5e7eb"
 
 # =====================================================
-# CSS (FINAL & STABIL)
+# CSS (TANPA CARD)
 # =====================================================
 st.markdown(f"""
 <style>
 
-/* ===== GLOBAL ===== */
+/* GLOBAL */
 html, body, [data-testid="stAppViewContainer"] {{
     background-color: {BG};
     color: {TEXT};
@@ -64,23 +62,12 @@ html, body, [data-testid="stAppViewContainer"] {{
     padding-bottom: 2rem;
 }}
 
-/* ===== SIDEBAR ===== */
+/* SIDEBAR */
 [data-testid="stSidebar"] {{
-    background-color: {CARD};
     border-right: 1px solid {BORDER};
 }}
 
-/* ===== CARD ===== */
-.card {{
-    background-color: {CARD};
-    border: 1px solid {BORDER};
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-}}
-
-/* ===== TEXT ===== */
+/* TEXT */
 h1, h2, h3 {{
     color: {TEXT};
 }}
@@ -89,19 +76,19 @@ a {{
     color: {ACCENT};
 }}
 
-/* ===== INPUT ===== */
+/* INPUT */
 input, textarea {{
-    border-radius: 10px !important;
+    border-radius: 8px !important;
 }}
 
-/* ===== BUTTON ===== */
+/* BUTTON */
 button[kind="primary"] {{
     background-color: {ACCENT};
     color: white;
-    border-radius: 10px;
+    border-radius: 8px;
 }}
 
-/* ===== FOOTER ===== */
+/* REMOVE FOOTER */
 footer {{
     display: none;
 }}
@@ -117,27 +104,27 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+st.divider()
+
 # =====================================================
-# INPUT CARD
+# INPUT SECTION
 # =====================================================
-with st.container():
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("Input Persamaan")
+st.subheader("Input Persamaan")
 
-    fungsi_input = st.text_input(
-        "Masukkan f(x)",
-        value="x**3 - x - 2"
-    )
+fungsi_input = st.text_input(
+    "Masukkan f(x)",
+    value="x**3 - x - 2"
+)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        a = st.number_input("Nilai a", value=1.0)
-    with col2:
-        b = st.number_input("Nilai b", value=2.0)
+col1, col2 = st.columns(2)
+with col1:
+    a = st.number_input("Nilai a", value=1.0)
+with col2:
+    b = st.number_input("Nilai b", value=2.0)
 
-    max_iter = st.slider("Jumlah Iterasi", 1, 50, 10)
+max_iter = st.slider("Jumlah Iterasi", 1, 50, 10)
 
-    st.markdown("</div>", unsafe_allow_html=True)
+st.divider()
 
 # =====================================================
 # PROSES
@@ -169,30 +156,28 @@ if st.button("Hitung Akar"):
     # =================================================
     # TABLE
     # =================================================
-    with st.container():
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("Tabel Iterasi")
-        st.dataframe(df, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.subheader("Tabel Iterasi")
+    st.dataframe(df, use_container_width=True)
+
+    st.divider()
 
     # =================================================
     # GRAPH
     # =================================================
-    with st.container():
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("Grafik Fungsi dan Akar")
+    st.subheader("Grafik Fungsi dan Akar")
 
-        x_plot = np.linspace(df["a"].min(), df["b"].max(), 400)
-        y_plot = f_func(x_plot)
+    x_plot = np.linspace(df["a"].min(), df["b"].max(), 400)
+    y_plot = f_func(x_plot)
 
-        fig, ax = plt.subplots()
-        ax.axhline(0)
-        ax.plot(x_plot, y_plot)
-        ax.scatter(df["c (akar)"], df["f(c)"])
+    fig, ax = plt.subplots()
+    ax.axhline(0)
+    ax.plot(x_plot, y_plot)
+    ax.scatter(df["c (akar)"], df["f(c)"])
 
-        ax.set_facecolor(CARD)
-        fig.patch.set_facecolor(CARD)
-        ax.tick_params(colors=TEXT)
+    ax.set_facecolor(BG)
+    fig.patch.set_facecolor(BG)
+    ax.tick_params(colors=TEXT)
+    ax.spines["bottom"].set_color(TEXT)
+    ax.spines["left"].set_color(TEXT)
 
-        st.pyplot(fig)
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.pyplot(fig)
