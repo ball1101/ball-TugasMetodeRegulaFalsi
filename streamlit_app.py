@@ -26,6 +26,7 @@ if mode:
     button = "#0284c7"
     switch_on = "#38bdf8"
     switch_off = "#334155"
+    collapse_color = "#ffffff"   # <<< PUTIH saat Dark Mode
 else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
@@ -37,6 +38,7 @@ else:
     button = "#0284c7"
     switch_on = "#0284c7"
     switch_off = "#94a3b8"
+    collapse_color = "#020617"   # <<< Hitam saat Light Mode
 
 # ============================
 # CSS GLOBAL
@@ -92,11 +94,6 @@ h1, h2, h3, h4, label {{
     box-shadow: 0 0 15px rgba(56,189,248,0.6);
 }}
 
-.stButton button:hover {{
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(56,189,248,1);
-}}
-
 /* ===== TOGGLE ===== */
 div[data-baseweb="switch"] > div {{
     background-color: {switch_off};
@@ -111,16 +108,20 @@ div[data-baseweb="switch"]:has(input:checked) > div {{
     box-shadow: 0 0 10px {switch_on};
 }}
 
-/* ===== SIDEBAR COLLAPSE ICON ===== */
+/* ===== SIDEBAR COLLAPSE ICON < ===== */
 button[data-testid="collapsedControl"] svg {{
-    stroke: {accent} !important;
+    stroke: {collapse_color} !important;
 }}
 
 button[data-testid="collapsedControl"] {{
     background: transparent !important;
-    border: 1px solid {accent} !important;
+    border: 1px solid {border};
     border-radius: 8px;
     padding: 4px;
+}}
+
+button[data-testid="collapsedControl"]:hover {{
+    background: rgba(255,255,255,0.1);
 }}
 
 </style>
@@ -170,7 +171,6 @@ if st.button("🔍 Hitung Akar"):
 
         st.success(f"🎯 Akar hampiran = {c}")
 
-        # ===== GRAFIK =====
         x = np.linspace(a0 - 2, b0 + 2, 500)
         y = [f(i) for i in x]
 
