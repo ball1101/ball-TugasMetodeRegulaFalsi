@@ -26,23 +26,27 @@ with st.sidebar:
     st.session_state.dark_mode = st.toggle("🌙 Dark Mode")
 
 # =====================================================
-# THEME COLOR
+# THEME COLOR (HIGH CONTRAST)
 # =====================================================
 if st.session_state.dark_mode:
-    # DARK MODE – NAVY
+    # DARK MODE – NAVY (HIGH CONTRAST)
     BG = "#0b1c2d"
-    TEXT = "#e6f0ff"
-    ACCENT = "#4da3ff"
+    TEXT = "#f1f5f9"        # hampir putih
+    TEXT_MUTED = "#cbd5e1"
+    ACCENT = "#60a5fa"
     BORDER = "#1e3a5f"
+    GRID = "#334155"
 else:
-    # LIGHT MODE
+    # LIGHT MODE – CLEAN
     BG = "#f3f5f9"
-    TEXT = "#1f2937"
+    TEXT = "#111827"        # hitam lembut
+    TEXT_MUTED = "#374151"
     ACCENT = "#2563eb"
-    BORDER = "#e5e7eb"
+    BORDER = "#d1d5db"
+    GRID = "#9ca3af"
 
 # =====================================================
-# CSS (TANPA CARD)
+# CSS (TEKS TERBACA DI SEMUA MODE)
 # =====================================================
 st.markdown(f"""
 <style>
@@ -53,10 +57,12 @@ html, body, [data-testid="stAppViewContainer"] {{
     color: {TEXT};
 }}
 
+/* HEADER */
 [data-testid="stHeader"] {{
     background: transparent;
 }}
 
+/* MAIN CONTAINER */
 .block-container {{
     padding-top: 2rem;
     padding-bottom: 2rem;
@@ -64,21 +70,24 @@ html, body, [data-testid="stAppViewContainer"] {{
 
 /* SIDEBAR */
 [data-testid="stSidebar"] {{
+    background-color: {BG};
     border-right: 1px solid {BORDER};
 }}
 
-/* TEXT */
-h1, h2, h3 {{
+/* HEADINGS */
+h1, h2, h3, h4 {{
     color: {TEXT};
 }}
 
-a {{
-    color: {ACCENT};
+/* PARAGRAPH & LABEL */
+p, label, span {{
+    color: {TEXT_MUTED};
 }}
 
-/* INPUT */
-input, textarea {{
-    border-radius: 8px !important;
+/* INPUT & SELECT */
+input, textarea, select {{
+    color: {TEXT} !important;
+    background-color: transparent !important;
 }}
 
 /* BUTTON */
@@ -88,7 +97,17 @@ button[kind="primary"] {{
     border-radius: 8px;
 }}
 
-/* REMOVE FOOTER */
+/* DATAFRAME */
+[data-testid="stDataFrame"] {{
+    color: {TEXT};
+}}
+
+/* DIVIDER */
+hr {{
+    border-color: {BORDER};
+}}
+
+/* FOOTER */
 footer {{
     display: none;
 }}
@@ -112,7 +131,7 @@ st.divider()
 st.subheader("Input Persamaan")
 
 fungsi_input = st.text_input(
-    "Masukkan f(x)",
+    "Masukkan fungsi f(x)",
     value="x**3 - x - 2"
 )
 
@@ -127,7 +146,7 @@ max_iter = st.slider("Jumlah Iterasi", 1, 50, 10)
 st.divider()
 
 # =====================================================
-# PROSES
+# PROCESS
 # =====================================================
 if st.button("Hitung Akar"):
     x = sp.symbols("x")
@@ -170,14 +189,17 @@ if st.button("Hitung Akar"):
     y_plot = f_func(x_plot)
 
     fig, ax = plt.subplots()
-    ax.axhline(0)
-    ax.plot(x_plot, y_plot)
-    ax.scatter(df["c (akar)"], df["f(c)"])
+    ax.axhline(0, color=GRID)
+    ax.plot(x_plot, y_plot, color=ACCENT)
+    ax.scatter(df["c (akar)"], df["f(c)"], color="red")
 
     ax.set_facecolor(BG)
     fig.patch.set_facecolor(BG)
+
     ax.tick_params(colors=TEXT)
     ax.spines["bottom"].set_color(TEXT)
     ax.spines["left"].set_color(TEXT)
+
+    ax.grid(True, color=GRID, alpha=0.4)
 
     st.pyplot(fig)
