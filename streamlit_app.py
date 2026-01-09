@@ -10,7 +10,7 @@ st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 # ============================
 with st.sidebar:
     st.markdown("## ⚙️ Pengaturan")
-    mode = st.toggle("Dark Mode", value=True)
+    mode = st.toggle("🌛 Dark Mode", value=True)
 
 # ============================
 # WARNA TEMA
