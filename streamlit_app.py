@@ -29,6 +29,7 @@ if mode:
     switch_off = "#334155"
     collapse_color = "#ffffff"
     plot_bg = "#0b1e3a"
+    plot_line = "#ffffff"   # PUTIH
 else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
@@ -43,6 +44,7 @@ else:
     switch_off = "#94a3b8"
     collapse_color = "#020617"
     plot_bg = "#ffffff"
+    plot_line = "#000000"   # HITAM
 
 # ============================
 # CSS
@@ -61,7 +63,7 @@ header[data-testid="stHeader"] {{
     background: {sidebar};
     border-right: 1px solid {border};
 }}
-h1,h2,h3,h4,h5,label,span,p {{
+h1,h2,h3,h4,h5,h6,label,p,span {{
     color: {text} !important;
 }}
 .stTextInput input,
@@ -71,12 +73,23 @@ h1,h2,h3,h4,h5,label,span,p {{
     border: 1px solid {border};
     border-radius: 10px;
 }}
+.stTextInput input::placeholder {{
+    color: {subtext};
+}}
+.stSlider label {{
+    color: {text} !important;
+}}
 .stSlider > div > div > div > div {{
     background-color: {accent};
 }}
+[data-testid="stDataFrame"] {{
+    background: {input_bg};
+    color: {text};
+    border: 1px solid {border};
+}}
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
-    color: white;
+    color: white !important;
     border-radius: 16px;
     padding: 14px 38px;
     font-weight: 700;
@@ -135,25 +148,22 @@ if st.button("🔍 Hitung Akar"):
         st.dataframe(df, use_container_width=True)
         st.success(f"🎯 Akar hampiran = {c}")
 
-        # ===== GRAFIK UKURAN IDEAL =====
+        # ===== GRAFIK =====
         x = np.linspace(a0 - 2, b0 + 2, 600)
         y = [f(i) for i in x]
 
-        fig, ax = plt.subplots(figsize=(9, 4.8), dpi=120)   # ← ukuran ideal
+        fig, ax = plt.subplots(figsize=(9,4.8), dpi=120)
         fig.patch.set_facecolor(plot_bg)
         ax.set_facecolor(plot_bg)
 
-        ax.plot(x, y, linewidth=2)
-        ax.axhline(0, linewidth=1.5)
-        ax.scatter(c, f(c), s=80)
+        ax.plot(x, y, color=plot_line, linewidth=2.2)
+        ax.axhline(0, color=plot_line, linewidth=1.5)
+        ax.scatter(c, f(c), color="#ef4444", s=90, zorder=5)
 
-        ax.set_title("Grafik f(x) dan Titik Akar", fontsize=13)
+        ax.set_title("Grafik f(x) dan Titik Akar", color=text)
         ax.tick_params(colors=text)
         ax.spines["bottom"].set_color(text)
         ax.spines["left"].set_color(text)
 
         fig.tight_layout(pad=2)
         st.pyplot(fig, use_container_width=True)
-
-    except:
-        st.error("❌ Fungsi tidak valid")
