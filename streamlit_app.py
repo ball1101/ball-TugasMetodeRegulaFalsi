@@ -6,7 +6,7 @@ import math
 st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 
 # ============================
-# SIDEBAR — TOGGLE
+# SIDEBAR
 # ============================
 with st.sidebar:
     st.markdown("## ⚙️ Pengaturan")
@@ -37,10 +37,12 @@ else:
     switch_off = "#94a3b8"
 
 # ============================
-# CSS (SAFE)
+# CSS GLOBAL (AMAN)
 # ============================
 st.markdown(f"""
 <style>
+
+/* ===== GLOBAL ===== */
 html, body, [data-testid="stAppViewContainer"] {{
     background: {bg};
     color: {text};
@@ -51,10 +53,11 @@ html, body, [data-testid="stAppViewContainer"] {{
     border-right: 1px solid {border};
 }}
 
-label, h1, h2, h3, h4 {{
+h1, h2, h3, h4, label {{
     color: {text} !important;
 }}
 
+/* ===== INPUT ===== */
 .stTextInput input,
 .stNumberInput input {{
     background: {input_bg};
@@ -63,7 +66,29 @@ label, h1, h2, h3, h4 {{
     border-radius: 10px;
 }}
 
-/* ===== STREAMLIT TOGGLE FIX ===== */
+/* ===== SLIDER ===== */
+.stSlider > div > div > div > div {{
+    background-color: {accent};
+}}
+
+/* ===== BUTTON ===== */
+.stButton button {{
+    background: linear-gradient(135deg, {button}, {accent});
+    color: white;
+    border-radius: 16px;
+    padding: 14px 38px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 0 15px rgba(56,189,248,0.6);
+}}
+
+.stButton button:hover {{
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(56,189,248,1);
+}}
+
+/* ===== TOGGLE (SAFE) ===== */
 div[data-baseweb="switch"] > div {{
     background-color: {switch_off};
 }}
@@ -81,26 +106,22 @@ div[data-baseweb="switch"] {{
     transform: scale(1.15);
 }}
 
-/* Button */
-.stButton button {{
-    background: linear-gradient(135deg, {button}, {accent});
-    color: white;
-    border-radius: 16px;
-    padding: 14px 38px;
-    font-size: 16px;
-    font-weight: 700;
-    border: none;
-    box-shadow: 0 0 15px rgba(56,189,248,0.6);
+/* ===== SIDEBAR COLLAPSE ICON « ===== */
+button[data-testid="collapsedControl"] svg {{
+    stroke: {accent} !important;
 }}
 
-.stButton button:hover {{
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(56,189,248,1);
+button[data-testid="collapsedControl"] {{
+    background: transparent !important;
+    border: 1px solid {accent} !important;
+    border-radius: 8px;
+    padding: 4px;
 }}
 
-.stSlider > div > div > div > div {{
-    background-color: {accent};
+button[data-testid="collapsedControl"]:hover {{
+    background: rgba(56,189,248,0.15) !important;
 }}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -122,6 +143,9 @@ with col2:
 
 iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 
+# ============================
+# HITUNG
+# ============================
 if st.button("🔍 Hitung Akar"):
     try:
         def f(x):
@@ -144,5 +168,5 @@ if st.button("🔍 Hitung Akar"):
         st.dataframe(df, use_container_width=True)
         st.success(f"🎯 Akar hampiran = {c}")
 
-    except Exception as e:
+    except:
         st.error("❌ Fungsi tidak valid")
