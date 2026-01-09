@@ -23,44 +23,89 @@ if "dark_mode" not in st.session_state:
 # =====================================================
 with st.sidebar:
     st.markdown("## Pengaturan")
-    st.session_state.dark_mode = st.checkbox("🌙 Dark Mode")
+    st.session_state.dark_mode = st.toggle("🌙 Dark Mode")
 
 # =====================================================
-# THEME
+# THEME COLOR
 # =====================================================
 if st.session_state.dark_mode:
-    BG = "#0e1117"
-    TEXT = "#fafafa"
-    CARD = "#1c1f26"
+    # DARK MODE – NAVY
+    BG = "#0b1c2d"        # navy gelap
+    CARD = "#12263f"      # navy card
+    TEXT = "#e6f0ff"      # putih kebiruan
+    ACCENT = "#4da3ff"    # biru accent
+    BORDER = "#1e3a5f"
 else:
-    BG = "#f4f6fb"
-    TEXT = "#1f2937"
-    CARD = "#ffffff"
+    # LIGHT MODE – CLEAN
+    BG = "#f3f5f9"        # abu terang
+    CARD = "#ffffff"     # putih
+    TEXT = "#1f2937"     # abu gelap
+    ACCENT = "#2563eb"   # biru
+    BORDER = "#e5e7eb"
 
 # =====================================================
-# CSS (AMAN & STABIL)
+# CSS (FINAL & STABIL)
 # =====================================================
 st.markdown(f"""
 <style>
+
+/* ===== GLOBAL ===== */
 html, body, [data-testid="stAppViewContainer"] {{
     background-color: {BG};
     color: {TEXT};
 }}
 
+[data-testid="stHeader"] {{
+    background: transparent;
+}}
+
 .block-container {{
     padding-top: 2rem;
+    padding-bottom: 2rem;
 }}
 
+/* ===== SIDEBAR ===== */
+[data-testid="stSidebar"] {{
+    background-color: {CARD};
+    border-right: 1px solid {BORDER};
+}}
+
+/* ===== CARD ===== */
 .card {{
     background-color: {CARD};
+    border: 1px solid {BORDER};
+    border-radius: 16px;
     padding: 24px;
-    border-radius: 14px;
     margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }}
 
-header, footer {{
+/* ===== TEXT ===== */
+h1, h2, h3 {{
+    color: {TEXT};
+}}
+
+a {{
+    color: {ACCENT};
+}}
+
+/* ===== INPUT ===== */
+input, textarea {{
+    border-radius: 10px !important;
+}}
+
+/* ===== BUTTON ===== */
+button[kind="primary"] {{
+    background-color: {ACCENT};
+    color: white;
+    border-radius: 10px;
+}}
+
+/* ===== FOOTER ===== */
+footer {{
     display: none;
 }}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -122,7 +167,7 @@ if st.button("Hitung Akar"):
     )
 
     # =================================================
-    # OUTPUT TABLE
+    # TABLE
     # =================================================
     with st.container():
         st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -131,19 +176,7 @@ if st.button("Hitung Akar"):
         st.markdown("</div>", unsafe_allow_html=True)
 
     # =================================================
-    # GRAFIK
+    # GRAPH
     # =================================================
     with st.container():
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("Grafik Fungsi dan Akar")
-
-        x_plot = np.linspace(df["a"].min(), df["b"].max(), 400)
-        y_plot = f_func(x_plot)
-
-        fig, ax = plt.subplots()
-        ax.axhline(0)
-        ax.plot(x_plot, y_plot)
-        ax.scatter(df["c (akar)"], df["f(c)"])
-
-        st.pyplot(fig)
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("<div class='card'>", uns
