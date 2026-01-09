@@ -10,7 +10,7 @@ st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 # ============================
 with st.sidebar:
     st.markdown("## ⚙️ Pengaturan")
-    mode = st.toggle("🌙 Dark Mode", value=True)
+    mode = st.toggle("Dark Mode", value=True)
 
 # ============================
 # WARNA TEMA
@@ -24,9 +24,9 @@ if mode:
     border = "#1e3a5f"
     input_bg = "#102a4c"
     button = "#2563eb"
-    switch_on = "#38bdf8"
-    switch_off = "#1e3a5f"
-    collapse_color = "#ffffff"   # PUTIH terang
+    switch_on = "#7f1d1d"   # 🔴 MAROON
+    switch_off = "#334155"
+    collapse_color = "#ffffff"
 else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
@@ -36,9 +36,9 @@ else:
     border = "#cbd5e1"
     input_bg = "#ffffff"
     button = "#2563eb"
-    switch_on = "#2563eb"
+    switch_on = "#7f1d1d"   # 🔴 tetap maroon
     switch_off = "#94a3b8"
-    collapse_color = "#020617"   # HITAM jelas
+    collapse_color = "#020617"
 
 # ============================
 # CSS
@@ -46,25 +46,35 @@ else:
 st.markdown(f"""
 <style>
 
+/* Page */
 html, body, [data-testid="stAppViewContainer"] {{
     background: {bg};
     color: {text};
 }}
 
+/* Topbar */
 header[data-testid="stHeader"] {{
     background: {topbar};
     border-bottom: 1px solid {border};
 }}
 
+/* Sidebar */
 [data-testid="stSidebar"] {{
     background: {sidebar};
     border-right: 1px solid {border};
 }}
 
-h1,h2,h3,h4,label {{
+/* Sidebar title & labels */
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] p {{
     color: {text} !important;
+    font-weight: 700;
 }}
 
+/* Input */
 .stTextInput input,
 .stNumberInput input {{
     background: {input_bg};
@@ -73,10 +83,7 @@ h1,h2,h3,h4,label {{
     border-radius: 10px;
 }}
 
-.stSlider > div > div > div > div {{
-    background-color: {accent};
-}}
-
+/* Button */
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
     color: white;
@@ -87,7 +94,7 @@ h1,h2,h3,h4,label {{
     box-shadow: 0 0 15px rgba(56,189,248,0.5);
 }}
 
-/* ===== Toggle ===== */
+/* Toggle */
 div[data-baseweb="switch"] > div {{
     background-color: {switch_off};
 }}
@@ -97,7 +104,11 @@ div[data-baseweb="switch"]:has(input:checked) > div {{
     box-shadow: 0 0 10px {switch_on};
 }}
 
-/* ===== Chevron ( « / › ) ===== */
+div[data-baseweb="switch"] span {{
+    background: white !important;
+}}
+
+/* Chevron */
 button[data-testid="collapsedControl"] svg {{
     stroke: {collapse_color} !important;
 }}
@@ -106,11 +117,6 @@ button[data-testid="collapsedControl"] {{
     border: 1px solid {border};
     border-radius: 8px;
     padding: 4px;
-    background: transparent !important;
-}}
-
-button[data-testid="collapsedControl"]:hover {{
-    background: rgba(255,255,255,0.1);
 }}
 
 </style>
@@ -157,17 +163,6 @@ if st.button("🔍 Hitung Akar"):
         st.dataframe(df, use_container_width=True)
 
         st.success(f"🎯 Akar hampiran = {c}")
-
-        x = np.linspace(a0-2, b0+2, 500)
-        y = [f(i) for i in x]
-
-        fig, ax = plt.subplots(figsize=(10,5))
-        ax.plot(x, y)
-        ax.axhline(0)
-        ax.scatter(c, f(c))
-        ax.set_title("Grafik f(x)")
-
-        st.pyplot(fig, use_container_width=True)
 
     except:
         st.error("❌ Fungsi tidak valid")
