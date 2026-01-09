@@ -19,12 +19,13 @@ if mode:
     bg = "#0b1e3a"
     sidebar = "#102a4c"
     topbar = "#0b1e3a"
-    text = "#e0f2ff"
+    text = "#f8fafc"
+    subtext = "#c7d2fe"
     accent = "#38bdf8"
     border = "#1e3a5f"
     input_bg = "#102a4c"
     button = "#2563eb"
-    switch_on = "#7f1d1d"   # 🔴 MAROON
+    switch_on = "#7f1d1d"   # maroon
     switch_off = "#334155"
     collapse_color = "#ffffff"
 else:
@@ -32,16 +33,17 @@ else:
     sidebar = "#ffffff"
     topbar = "#ffffff"
     text = "#020617"
+    subtext = "#334155"
     accent = "#2563eb"
     border = "#cbd5e1"
     input_bg = "#ffffff"
     button = "#2563eb"
-    switch_on = "#7f1d1d"   # 🔴 tetap maroon
+    switch_on = "#7f1d1d"
     switch_off = "#94a3b8"
     collapse_color = "#020617"
 
 # ============================
-# CSS
+# CSS GLOBAL
 # ============================
 st.markdown(f"""
 <style>
@@ -52,7 +54,7 @@ html, body, [data-testid="stAppViewContainer"] {{
     color: {text};
 }}
 
-/* Topbar */
+/* Header */
 header[data-testid="stHeader"] {{
     background: {topbar};
     border-bottom: 1px solid {border};
@@ -64,14 +66,15 @@ header[data-testid="stHeader"] {{
     border-right: 1px solid {border};
 }}
 
-/* Sidebar title & labels */
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] p {{
+/* Semua teks */
+h1, h2, h3, h4, h5, h6,
+p, span, label, div, small {{
     color: {text} !important;
-    font-weight: 700;
+}}
+
+/* Keterangan kecil */
+.stMarkdown, .stCaption {{
+    color: {subtext} !important;
 }}
 
 /* Input */
@@ -83,10 +86,31 @@ header[data-testid="stHeader"] {{
     border-radius: 10px;
 }}
 
+/* Placeholder */
+.stTextInput input::placeholder {{
+    color: {subtext};
+}}
+
+/* Slider */
+.stSlider label {{
+    color: {text} !important;
+}}
+
+.stSlider > div > div > div > div {{
+    background-color: {accent};
+}}
+
+/* Dataframe */
+[data-testid="stDataFrame"] {{
+    background: {input_bg};
+    color: {text};
+    border: 1px solid {border};
+}}
+
 /* Button */
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
-    color: white;
+    color: white !important;
     border-radius: 16px;
     padding: 14px 38px;
     font-weight: 700;
@@ -129,6 +153,8 @@ st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Fa
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("### Input Persamaan")
+st.markdown("<small>Masukkan fungsi matematika menggunakan notasi Python</small>", unsafe_allow_html=True)
+
 fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
 
 col1, col2 = st.columns(2)
@@ -164,5 +190,5 @@ if st.button("🔍 Hitung Akar"):
 
         st.success(f"🎯 Akar hampiran = {c}")
 
-    except:
-        st.error("❌ Fungsi tidak valid")
+    except Exception as e:
+        st.error("❌ Fungsi tidak valid atau terjadi error.")
