@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import math
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 
@@ -37,12 +38,10 @@ else:
     switch_off = "#94a3b8"
 
 # ============================
-# CSS GLOBAL (AMAN)
+# CSS GLOBAL
 # ============================
 st.markdown(f"""
 <style>
-
-/* ===== GLOBAL ===== */
 html, body, [data-testid="stAppViewContainer"] {{
     background: {bg};
     color: {text};
@@ -57,7 +56,6 @@ h1, h2, h3, h4, label {{
     color: {text} !important;
 }}
 
-/* ===== INPUT ===== */
 .stTextInput input,
 .stNumberInput input {{
     background: {input_bg};
@@ -66,12 +64,10 @@ h1, h2, h3, h4, label {{
     border-radius: 10px;
 }}
 
-/* ===== SLIDER ===== */
 .stSlider > div > div > div > div {{
     background-color: {accent};
 }}
 
-/* ===== BUTTON ===== */
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
     color: white;
@@ -88,7 +84,6 @@ h1, h2, h3, h4, label {{
     box-shadow: 0 0 25px rgba(56,189,248,1);
 }}
 
-/* ===== TOGGLE (SAFE) ===== */
 div[data-baseweb="switch"] > div {{
     background-color: {switch_off};
 }}
@@ -97,16 +92,11 @@ div[data-baseweb="switch"] span {{
     background-color: white !important;
 }}
 
-div[data-baseweb="switch"]:has(input:checked) > div {{
+div[data-baseweb=" թվական switch"]:has(input:checked) > div {{
     background-color: {switch_on};
     box-shadow: 0 0 10px {switch_on};
 }}
 
-div[data-baseweb="switch"] {{
-    transform: scale(1.15);
-}}
-
-/* ===== SIDEBAR COLLAPSE ICON « ===== */
 button[data-testid="collapsedControl"] svg {{
     stroke: {accent} !important;
 }}
@@ -116,10 +106,6 @@ button[data-testid="collapsedControl"] {{
     border: 1px solid {accent} !important;
     border-radius: 8px;
     padding: 4px;
-}}
-
-button[data-testid="collapsedControl"]:hover {{
-    background: rgba(56,189,248,0.15) !important;
 }}
 
 </style>
@@ -132,7 +118,6 @@ st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Fa
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("### Input Persamaan")
-
 fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
 
 col1, col2 = st.columns(2)
@@ -144,7 +129,7 @@ with col2:
 iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 
 # ============================
-# HITUNG
+# HITUNG & GRAFIK
 # ============================
 if st.button("🔍 Hitung Akar"):
     try:
@@ -152,6 +137,8 @@ if st.button("🔍 Hitung Akar"):
             return eval(fx)
 
         data = []
+        a0, b0 = a, b
+
         for i in range(iterasi):
             fa, fb = f(a), f(b)
             c = (a * fb - b * fa) / (fb - fa)
@@ -168,5 +155,17 @@ if st.button("🔍 Hitung Akar"):
         st.dataframe(df, use_container_width=True)
         st.success(f"🎯 Akar hampiran = {c}")
 
-    except:
+        # ===== GRAFIK =====
+        x = np.linspace(a0-2, b0+2, 400)
+        y = [f(i) for i in x]
+
+        fig, ax = plt.subplots()
+        ax.plot(x, y)
+        ax.axhline(0)
+        ax.scatter(c, f(c))
+        ax.set_title("Grafik f(x) dan Akar")
+
+        st.pyplot(fig)
+
+    except Exception as e:
         st.error("❌ Fungsi tidak valid")
