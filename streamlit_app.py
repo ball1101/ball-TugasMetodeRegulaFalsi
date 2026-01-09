@@ -2,142 +2,187 @@ import streamlit as st
 import pandas as pd
 import sympy as sp
 
-# =========================
-# PAGE CONFIG (WAJIB WIDE)
-# =========================
+# =====================================================
+# PAGE CONFIG (WAJIB)
+# =====================================================
 st.set_page_config(
     page_title="Kalkulator SPNL - Regula Falsi",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# =========================
+# =====================================================
 # SESSION STATE
-# =========================
+# =====================================================
 if "dark_mode" not in st.session_state:
     st.session_state.dark_mode = False
 
-# =========================
+# =====================================================
 # SIDEBAR
-# =========================
+# =====================================================
 with st.sidebar:
-    st.session_state.dark_mode = st.toggle("🌙 Dark Mode")
+    st.markdown("## Pengaturan")
+    st.session_state.dark_mode = st.checkbox("🌙 Dark Mode")
 
-# =========================
-# THEME
-# =========================
+# =====================================================
+# THEME COLOR
+# =====================================================
 if st.session_state.dark_mode:
-    bg = "#0E1117"
-    text = "#FAFAFA"
-    card = "#1E1E1E"
+    BG = "#0e1117"
+    TEXT = "#fafafa"
+    CARD = "#1c1f26"
+    BORDER = "#2a2f3a"
 else:
-    bg = "#F6F7FB"
-    text = "#2E2E2E"
-    card = "#FFFFFF"
+    BG = "#f4f6fb"
+    TEXT = "#1f2937"
+    CARD = "#ffffff"
+    BORDER = "#e5e7eb"
 
-# =========================
-# CSS (BERSIH & AMAN)
-# =========================
+# =====================================================
+# GLOBAL CSS (INI KUNCI UTAMA)
+# =====================================================
 st.markdown(f"""
 <style>
-html, body, [data-testid="stAppViewContainer"] {{
-    background-color: {bg};
-    color: {text};
+
+/* ====== FORCE REMOVE SEMUA BACKGROUND PUTIH ====== */
+html, body {{
+    background-color: {BG} !important;
+    color: {TEXT} !important;
 }}
 
+[data-testid="stAppViewContainer"] {{
+    background-color: {BG} !important;
+}}
+
+[data-testid="stHeader"] {{
+    background: transparent !important;
+}}
+
+[data-testid="stToolbar"] {{
+    display: none !important;
+}}
+
+[data-testid="stSidebar"] {{
+    background-color: {CARD} !important;
+}}
+
+/* MAIN AREA */
+[data-testid="stMain"] {{
+    background-color: {BG} !important;
+}}
+
+/* BLOCK UTAMA */
 .block-container {{
-    padding-top: 2rem;
+    padding-top: 1.5rem !important;
+    padding-bottom: 2rem !important;
+    background-color: {BG} !important;
 }}
 
+/* ====== CARD ====== */
 .card {{
-    background: {card};
-    padding: 24px;
+    background-color: {CARD};
+    border: 1px solid {BORDER};
     border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    padding: 24px;
     margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }}
 
-input {{
-    border-radius: 12px !important;
+/* INPUT */
+input, textarea {{
+    border-radius: 10px !important;
 }}
 
-header, footer {{
-    visibility: hidden;
+/* HAPUS SEMUA BLOCK KOSONG */
+div[data-testid="stVerticalBlock"]:has(> div:empty) {{
+    display: none !important;
 }}
+
+footer {{
+    display: none !important;
+}}
+
 </style>
 """, unsafe_allow_html=True)
 
-# =========================
+# =====================================================
 # TITLE
-# =========================
+# =====================================================
 st.markdown(
     "<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi</h1>",
     unsafe_allow_html=True
 )
 
-# =========================
+# =====================================================
 # STEP 1
-# =========================
-with st.container():
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("Step 1: Masukkan Persamaan f(x)")
-    st.caption("Contoh: x**3 - x - 2")
+# =====================================================
+st.markdown("""
+<div class="card">
+    <h3>Step 1: Masukkan Persamaan f(x)</h3>
+    <p>Contoh: <code>x**3 - x - 2</code></p>
+</div>
+""", unsafe_allow_html=True)
 
-    fungsi_input = st.text_input(
-        "Persamaan",
-        value="x**3 - x - 2",
-        label_visibility="collapsed"
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+fungsi_input = st.text_input(
+    "Persamaan",
+    value="x**3 - x - 2",
+    label_visibility="collapsed"
+)
 
-# =========================
+# =====================================================
 # STEP 2
-# =========================
-with st.container():
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("Step 2: Interval Awal")
+# =====================================================
+st.markdown("""
+<div class="card">
+    <h3>Step 2: Interval Awal</h3>
+</div>
+""", unsafe_allow_html=True)
 
-    a = st.number_input("Nilai a", value=1.0)
-    b = st.number_input("Nilai b", value=2.0)
+a = st.number_input("Nilai a", value=1.0)
+b = st.number_input("Nilai b", value=2.0)
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# =========================
+# =====================================================
 # STEP 3
-# =========================
-with st.container():
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("Step 3: Iterasi")
+# =====================================================
+st.markdown("""
+<div class="card">
+    <h3>Step 3: Iterasi</h3>
+</div>
+""", unsafe_allow_html=True)
 
-    max_iter = st.slider("Jumlah Iterasi", 1, 50, 10)
+max_iter = st.slider("Jumlah Iterasi", 1, 50, 10)
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# =========================
+# =====================================================
 # PROSES
-# =========================
+# =====================================================
 if st.button("Hitung Akar"):
     x = sp.symbols("x")
     f = sp.sympify(fungsi_input)
     f_func = sp.lambdify(x, f)
 
-    data = []
+    hasil = []
     for i in range(max_iter):
         fa = f_func(a)
         fb = f_func(b)
         c = b - fb * (b - a) / (fb - fa)
         fc = f_func(c)
 
-        data.append([i + 1, a, b, c, fc])
+        hasil.append([i + 1, a, b, c, fc])
 
         if fa * fc < 0:
             b = c
         else:
             a = c
 
-    df = pd.DataFrame(data, columns=["Iterasi", "a", "b", "c", "f(c)"])
+    df = pd.DataFrame(
+        hasil,
+        columns=["Iterasi", "a", "b", "c", "f(c)"]
+    )
 
-    with st.container():
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.subheader("Hasil Iterasi")
-        st.dataframe(df, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div class="card">
+        <h3>Hasil Iterasi</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.dataframe(df, use_container_width=True)
