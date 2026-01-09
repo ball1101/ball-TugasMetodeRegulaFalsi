@@ -28,6 +28,7 @@ if mode:
     switch_on = "#7f1d1d"
     switch_off = "#334155"
     collapse_color = "#ffffff"
+    plot_bg = "#0b1e3a"
 else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
@@ -41,6 +42,7 @@ else:
     switch_on = "#7f1d1d"
     switch_off = "#94a3b8"
     collapse_color = "#020617"
+    plot_bg = "#ffffff"
 
 # ============================
 # CSS
@@ -133,17 +135,24 @@ if st.button("🔍 Hitung Akar"):
         st.dataframe(df, use_container_width=True)
         st.success(f"🎯 Akar hampiran = {c}")
 
-        # ===== GRAFIK RESPONSIVE =====
-        x = np.linspace(a0 - 2, b0 + 2, 500)
+        # ===== GRAFIK UKURAN IDEAL =====
+        x = np.linspace(a0 - 2, b0 + 2, 600)
         y = [f(i) for i in x]
 
-        fig, ax = plt.subplots()
-        ax.plot(x, y)
-        ax.axhline(0)
-        ax.scatter(c, f(c))
-        ax.set_title("Grafik f(x) dan Titik Akar")
+        fig, ax = plt.subplots(figsize=(9, 4.8), dpi=120)   # ← ukuran ideal
+        fig.patch.set_facecolor(plot_bg)
+        ax.set_facecolor(plot_bg)
 
-        fig.tight_layout()
+        ax.plot(x, y, linewidth=2)
+        ax.axhline(0, linewidth=1.5)
+        ax.scatter(c, f(c), s=80)
+
+        ax.set_title("Grafik f(x) dan Titik Akar", fontsize=13)
+        ax.tick_params(colors=text)
+        ax.spines["bottom"].set_color(text)
+        ax.spines["left"].set_color(text)
+
+        fig.tight_layout(pad=2)
         st.pyplot(fig, use_container_width=True)
 
     except:
