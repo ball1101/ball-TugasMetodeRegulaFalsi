@@ -12,10 +12,6 @@ st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 with st.sidebar:
     st.markdown("## ⚙️ Pengaturan")
     mode = st.toggle("🌙 Dark Mode", value=True)
-    st.markdown("---")
-    st.markdown("📊 **Ukuran Grafik**")
-    fig_w = st.slider("Lebar Grafik", 4, 16, 8)
-    fig_h = st.slider("Tinggi Grafik", 3, 12, 5)
 
 # ============================
 # WARNA TEMA
@@ -116,6 +112,7 @@ st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Fa
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("### Input Persamaan")
+
 fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
 
 col1, col2 = st.columns(2)
@@ -127,7 +124,7 @@ with col2:
 iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 
 # ============================
-# HITUNG
+# HITUNG & GRAFIK
 # ============================
 if st.button("🔍 Hitung Akar"):
     try:
@@ -153,17 +150,20 @@ if st.button("🔍 Hitung Akar"):
         st.dataframe(df, use_container_width=True)
         st.success(f"🎯 Akar hampiran = {c}")
 
-        # ===== GRAFIK =====
-        x = np.linspace(a0-2, b0+2, 400)
+        # ===== GRAFIK AUTO SIZE =====
+        x = np.linspace(a0 - 2, b0 + 2, 500)
         y = [f(i) for i in x]
 
-        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        fig, ax = plt.subplots(figsize=(10, 5))   # ukuran ideal desktop
+        fig.set_dpi(120)
+
         ax.plot(x, y)
         ax.axhline(0)
         ax.scatter(c, f(c))
-        ax.set_title("Grafik f(x) dan Akar")
+        ax.set_title("Grafik f(x) dan Titik Akar")
+        ax.grid(True)
 
-        st.pyplot(fig)
+        st.pyplot(fig, use_container_width=True)
 
-    except Exception:
+    except:
         st.error("❌ Fungsi tidak valid")
