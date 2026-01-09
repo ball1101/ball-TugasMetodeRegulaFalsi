@@ -3,14 +3,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="📊 Kalkulator SPNL", layout="wide")
+st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 
 # ============================
 # SIDEBAR
 # ============================
 with st.sidebar:
     st.markdown("## ⚙️ Pengaturan")
-    mode = st.toggle("🌛 Dark Mode", value=True)
+    mode = st.toggle("Dark Mode", value=True)
 
 # ============================
 # WARNA TEMA
@@ -25,7 +25,7 @@ if mode:
     border = "#1e3a5f"
     input_bg = "#102a4c"
     button = "#2563eb"
-    switch_on = "#7f1d1d"   # maroon
+    switch_on = "#7f1d1d"
     switch_off = "#334155"
     collapse_color = "#ffffff"
 else:
@@ -43,41 +43,25 @@ else:
     collapse_color = "#020617"
 
 # ============================
-# CSS GLOBAL
+# CSS
 # ============================
 st.markdown(f"""
 <style>
-
-/* Page */
 html, body, [data-testid="stAppViewContainer"] {{
     background: {bg};
     color: {text};
 }}
-
-/* Header */
 header[data-testid="stHeader"] {{
     background: {topbar};
     border-bottom: 1px solid {border};
 }}
-
-/* Sidebar */
 [data-testid="stSidebar"] {{
     background: {sidebar};
     border-right: 1px solid {border};
 }}
-
-/* Semua teks */
-h1, h2, h3, h4, h5, h6,
-p, span, label, div, small {{
+h1,h2,h3,h4,h5,label,span,p {{
     color: {text} !important;
 }}
-
-/* Keterangan kecil */
-.stMarkdown, .stCaption {{
-    color: {subtext} !important;
-}}
-
-/* Input */
 .stTextInput input,
 .stNumberInput input {{
     background: {input_bg};
@@ -85,64 +69,26 @@ p, span, label, div, small {{
     border: 1px solid {border};
     border-radius: 10px;
 }}
-
-/* Placeholder */
-.stTextInput input::placeholder {{
-    color: {subtext};
-}}
-
-/* Slider */
-.stSlider label {{
-    color: {text} !important;
-}}
-
 .stSlider > div > div > div > div {{
     background-color: {accent};
 }}
-
-/* Dataframe */
-[data-testid="stDataFrame"] {{
-    background: {input_bg};
-    color: {text};
-    border: 1px solid {border};
-}}
-
-/* Button */
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
-    color: white !important;
+    color: white;
     border-radius: 16px;
     padding: 14px 38px;
     font-weight: 700;
     border: none;
-    box-shadow: 0 0 15px rgba(56,189,248,0.5);
 }}
-
-/* Toggle */
 div[data-baseweb="switch"] > div {{
     background-color: {switch_off};
 }}
-
 div[data-baseweb="switch"]:has(input:checked) > div {{
     background-color: {switch_on};
-    box-shadow: 0 0 10px {switch_on};
 }}
-
-div[data-baseweb="switch"] span {{
-    background: white !important;
-}}
-
-/* Chevron */
 button[data-testid="collapsedControl"] svg {{
     stroke: {collapse_color} !important;
 }}
-
-button[data-testid="collapsedControl"] {{
-    border: 1px solid {border};
-    border-radius: 8px;
-    padding: 4px;
-}}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -153,8 +99,6 @@ st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Fa
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("### Input Persamaan")
-st.markdown("<small>Masukkan fungsi matematika menggunakan notasi Python</small>", unsafe_allow_html=True)
-
 fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
 
 col1, col2 = st.columns(2)
@@ -166,9 +110,9 @@ with col2:
 iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 
 # ============================
-# HITUNG
+# HITUNG & GRAFIK
 # ============================
-if st.button("📈 Hitung Akar"):
+if st.button("🔍 Hitung Akar"):
     try:
         def f(x): return eval(fx)
 
@@ -187,8 +131,20 @@ if st.button("📈 Hitung Akar"):
 
         df = pd.DataFrame(data, columns=["Iterasi","a","b","c","f(c)"])
         st.dataframe(df, use_container_width=True)
-
         st.success(f"🎯 Akar hampiran = {c}")
 
-    except Exception as e:
-        st.error("❌ Fungsi tidak valid atau terjadi error.")
+        # ===== GRAFIK RESPONSIVE =====
+        x = np.linspace(a0 - 2, b0 + 2, 500)
+        y = [f(i) for i in x]
+
+        fig, ax = plt.subplots()
+        ax.plot(x, y)
+        ax.axhline(0)
+        ax.scatter(c, f(c))
+        ax.set_title("Grafik f(x) dan Titik Akar")
+
+        fig.tight_layout()
+        st.pyplot(fig, use_container_width=True)
+
+    except:
+        st.error("❌ Fungsi tidak valid")
