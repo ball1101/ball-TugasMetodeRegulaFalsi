@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
+st.set_page_config(page_title="📊 Kalkulator SPNL", layout="wide")
 
 # ============================
 # SIDEBAR
@@ -168,7 +168,7 @@ iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 # ============================
 # HITUNG
 # ============================
-if st.button("📊 Hitung Akar"):
+if st.button("📈 Hitung Akar"):
     try:
         def f(x): return eval(fx)
 
