@@ -29,7 +29,7 @@ if mode:
     switch_off = "#334155"
     collapse_color = "#ffffff"
     plot_bg = "#0b1e3a"
-    plot_line = "#ffffff"   # PUTIH
+    plot_line = "white"
 else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
@@ -44,7 +44,7 @@ else:
     switch_off = "#94a3b8"
     collapse_color = "#020617"
     plot_bg = "#ffffff"
-    plot_line = "#000000"   # HITAM
+    plot_line = "black"
 
 # ============================
 # CSS
@@ -148,22 +148,24 @@ if st.button("🔍 Hitung Akar"):
         st.dataframe(df, use_container_width=True)
         st.success(f"🎯 Akar hampiran = {c}")
 
-        # ===== GRAFIK =====
         x = np.linspace(a0 - 2, b0 + 2, 600)
         y = [f(i) for i in x]
 
-        fig, ax = plt.subplots(figsize=(9,4.8), dpi=120)
+        fig, ax = plt.subplots(figsize=(9, 4.8), dpi=120)
         fig.patch.set_facecolor(plot_bg)
         ax.set_facecolor(plot_bg)
 
         ax.plot(x, y, color=plot_line, linewidth=2.2)
         ax.axhline(0, color=plot_line, linewidth=1.5)
-        ax.scatter(c, f(c), color="#ef4444", s=90, zorder=5)
+        ax.scatter(c, f(c), color="#ef4444", s=80)
 
-        ax.set_title("Grafik f(x) dan Titik Akar", color=text)
-        ax.tick_params(colors=text)
-        ax.spines["bottom"].set_color(text)
-        ax.spines["left"].set_color(text)
+        ax.set_title("Grafik f(x) dan Titik Akar")
+        ax.tick_params(colors=plot_line)
+        ax.spines["bottom"].set_color(plot_line)
+        ax.spines["left"].set_color(plot_line)
 
-        fig.tight_layout(pad=2)
+        fig.tight_layout()
         st.pyplot(fig, use_container_width=True)
+
+    except Exception as e:
+        st.error("❌ Fungsi tidak valid atau terjadi error")
