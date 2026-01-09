@@ -6,7 +6,7 @@ import math
 st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 
 # ============================
-# SIDEBAR → TOGGLE
+# SIDEBAR — TOGGLE
 # ============================
 with st.sidebar:
     st.markdown("## ⚙️ Pengaturan")
@@ -15,29 +15,31 @@ with st.sidebar:
 # ============================
 # WARNA TEMA
 # ============================
-if mode:  # DARK MODE
+if mode:
     bg = "#020617"
     sidebar = "#020617"
     text = "#f8fafc"
-    muted = "#94a3b8"
     accent = "#38bdf8"
     border = "#1e293b"
     input_bg = "#020617"
     button = "#0284c7"
-    button_text = "#ffffff"
+    switch_bg = "#1e293b"
+    switch_on = "#38bdf8"
+    switch_off = "#334155"
 else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
     text = "#020617"
-    muted = "#475569"
     accent = "#0284c7"
     border = "#cbd5e1"
     input_bg = "#ffffff"
     button = "#0284c7"
-    button_text = "#ffffff"
+    switch_bg = "#cbd5e1"
+    switch_on = "#0284c7"
+    switch_off = "#94a3b8"
 
 # ============================
-# CSS GLOBAL
+# CSS — FIX TOGGLE VISIBILITY
 # ============================
 st.markdown(f"""
 <style>
@@ -51,12 +53,8 @@ html, body, [data-testid="stAppViewContainer"] {{
     border-right: 1px solid {border};
 }}
 
-h1, h2, h3, h4 {{
-    color: {text};
-}}
-
-label, p, span, div {{
-    color: {text};
+h1, h2, h3, h4, label {{
+    color: {text} !important;
 }}
 
 .stTextInput input,
@@ -65,19 +63,34 @@ label, p, span, div {{
     color: {text};
     border: 1px solid {border};
     border-radius: 10px;
+}
+
+/* ===== FIX STREAMLIT TOGGLE ===== */
+div[data-baseweb="switch"] > div {{
+    background-color: {switch_bg} !important;
 }}
 
-.stSlider > div > div > div > div {{
-    background-color: {accent};
+div[data-baseweb="switch"] span {{
+    background-color: white !important;
 }}
 
-.stDataFrame {{
-    background: {bg};
+div[data-baseweb="switch"][aria-checked="true"] > div {{
+    background-color: {switch_on} !important;
+    box-shadow: 0 0 12px {switch_on};
 }}
 
+div[data-baseweb="switch"][aria-checked="false"] > div {{
+    background-color: {switch_off} !important;
+}}
+
+div[data-baseweb="switch"] {{
+    transform: scale(1.15);
+}}
+
+/* BUTTON */
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
-    color: {button_text};
+    color: white;
     border-radius: 16px;
     padding: 14px 38px;
     font-size: 16px;
@@ -91,8 +104,8 @@ label, p, span, div {{
     box-shadow: 0 0 25px rgba(56,189,248,1);
 }}
 
-hr {{
-    border: 1px solid {border};
+.stSlider > div > div > div > div {{
+    background-color: {accent};
 }}
 </style>
 """, unsafe_allow_html=True)
