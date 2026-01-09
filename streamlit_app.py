@@ -6,9 +6,11 @@ import math
 st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
 
 # ============================
-# TOGGLE MODE
+# SIDEBAR → TOGGLE
 # ============================
-mode = st.toggle("🌙 Dark Mode", value=True)
+with st.sidebar:
+    st.markdown("## ⚙️ Pengaturan")
+    mode = st.toggle("🌙 Dark Mode", value=True)
 
 # ============================
 # WARNA TEMA
@@ -35,7 +37,7 @@ else:
     button_text = "#ffffff"
 
 # ============================
-# GLOBAL CSS
+# CSS GLOBAL
 # ============================
 st.markdown(f"""
 <style>
@@ -92,16 +94,8 @@ label, p, span, div {{
 hr {{
     border: 1px solid {border};
 }}
-
 </style>
 """, unsafe_allow_html=True)
-
-# ============================
-# SIDEBAR
-# ============================
-with st.sidebar:
-    st.markdown("## ⚙️ Pengaturan")
-    st.markdown("🌙 **Dark Mode**")
 
 # ============================
 # JUDUL
@@ -113,6 +107,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 # INPUT
 # ============================
 st.markdown("### Input Persamaan")
+
 fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
 
 col1, col2 = st.columns(2)
