@@ -23,7 +23,6 @@ if mode:
     border = "#1e293b"
     input_bg = "#020617"
     button = "#0284c7"
-    switch_bg = "#1e293b"
     switch_on = "#38bdf8"
     switch_off = "#334155"
 else:
@@ -34,12 +33,11 @@ else:
     border = "#cbd5e1"
     input_bg = "#ffffff"
     button = "#0284c7"
-    switch_bg = "#cbd5e1"
     switch_on = "#0284c7"
     switch_off = "#94a3b8"
 
 # ============================
-# CSS — FIX TOGGLE VISIBILITY
+# CSS (SAFE)
 # ============================
 st.markdown(f"""
 <style>
@@ -53,7 +51,7 @@ html, body, [data-testid="stAppViewContainer"] {{
     border-right: 1px solid {border};
 }}
 
-h1, h2, h3, h4, label {{
+label, h1, h2, h3, h4 {{
     color: {text} !important;
 }}
 
@@ -63,31 +61,27 @@ h1, h2, h3, h4, label {{
     color: {text};
     border: 1px solid {border};
     border-radius: 10px;
-}
+}}
 
-/* ===== FIX STREAMLIT TOGGLE ===== */
+/* ===== STREAMLIT TOGGLE FIX ===== */
 div[data-baseweb="switch"] > div {{
-    background-color: {switch_bg} !important;
+    background-color: {switch_off};
 }}
 
 div[data-baseweb="switch"] span {{
     background-color: white !important;
 }}
 
-div[data-baseweb="switch"][aria-checked="true"] > div {{
-    background-color: {switch_on} !important;
-    box-shadow: 0 0 12px {switch_on};
-}}
-
-div[data-baseweb="switch"][aria-checked="false"] > div {{
-    background-color: {switch_off} !important;
+div[data-baseweb="switch"]:has(input:checked) > div {{
+    background-color: {switch_on};
+    box-shadow: 0 0 10px {switch_on};
 }}
 
 div[data-baseweb="switch"] {{
     transform: scale(1.15);
 }}
 
-/* BUTTON */
+/* Button */
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
     color: white;
@@ -111,14 +105,11 @@ div[data-baseweb="switch"] {{
 """, unsafe_allow_html=True)
 
 # ============================
-# JUDUL
+# UI
 # ============================
 st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi</h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# ============================
-# INPUT
-# ============================
 st.markdown("### Input Persamaan")
 
 fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
@@ -131,11 +122,6 @@ with col2:
 
 iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 
-st.markdown("<br>", unsafe_allow_html=True)
-
-# ============================
-# TOMBOL
-# ============================
 if st.button("🔍 Hitung Akar"):
     try:
         def f(x):
@@ -156,8 +142,7 @@ if st.button("🔍 Hitung Akar"):
 
         df = pd.DataFrame(data, columns=["Iterasi","a","b","c","f(c)"])
         st.dataframe(df, use_container_width=True)
-
         st.success(f"🎯 Akar hampiran = {c}")
 
-    except:
+    except Exception as e:
         st.error("❌ Fungsi tidak valid")
