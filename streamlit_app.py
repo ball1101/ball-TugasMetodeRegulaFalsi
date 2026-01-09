@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import math
 import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Kalkulator SPNL", layout="wide")
@@ -19,6 +18,7 @@ with st.sidebar:
 if mode:
     bg = "#020617"
     sidebar = "#020617"
+    topbar = "#020617"
     text = "#f8fafc"
     accent = "#38bdf8"
     border = "#1e293b"
@@ -29,6 +29,7 @@ if mode:
 else:
     bg = "#f8fafc"
     sidebar = "#ffffff"
+    topbar = "#ffffff"
     text = "#020617"
     accent = "#0284c7"
     border = "#cbd5e1"
@@ -38,15 +39,24 @@ else:
     switch_off = "#94a3b8"
 
 # ============================
-# CSS
+# CSS GLOBAL
 # ============================
 st.markdown(f"""
 <style>
+
+/* ===== PAGE ===== */
 html, body, [data-testid="stAppViewContainer"] {{
     background: {bg};
     color: {text};
 }}
 
+/* ===== TOP BAR ===== */
+header[data-testid="stHeader"] {{
+    background: {topbar};
+    border-bottom: 1px solid {border};
+}}
+
+/* ===== SIDEBAR ===== */
 [data-testid="stSidebar"] {{
     background: {sidebar};
     border-right: 1px solid {border};
@@ -56,6 +66,7 @@ h1, h2, h3, h4, label {{
     color: {text} !important;
 }}
 
+/* ===== INPUT ===== */
 .stTextInput input,
 .stNumberInput input {{
     background: {input_bg};
@@ -64,10 +75,12 @@ h1, h2, h3, h4, label {{
     border-radius: 10px;
 }}
 
+/* ===== SLIDER ===== */
 .stSlider > div > div > div > div {{
     background-color: {accent};
 }}
 
+/* ===== BUTTON ===== */
 .stButton button {{
     background: linear-gradient(135deg, {button}, {accent});
     color: white;
@@ -79,6 +92,12 @@ h1, h2, h3, h4, label {{
     box-shadow: 0 0 15px rgba(56,189,248,0.6);
 }}
 
+.stButton button:hover {{
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(56,189,248,1);
+}}
+
+/* ===== TOGGLE ===== */
 div[data-baseweb="switch"] > div {{
     background-color: {switch_off};
 }}
@@ -92,6 +111,7 @@ div[data-baseweb="switch"]:has(input:checked) > div {{
     box-shadow: 0 0 10px {switch_on};
 }}
 
+/* ===== SIDEBAR COLLAPSE ICON ===== */
 button[data-testid="collapsedControl"] svg {{
     stroke: {accent} !important;
 }}
@@ -102,6 +122,7 @@ button[data-testid="collapsedControl"] {{
     border-radius: 8px;
     padding: 4px;
 }}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -112,7 +133,6 @@ st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Fa
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("### Input Persamaan")
-
 fx = st.text_input("Masukkan fungsi f(x)", "x**3 - x - 2")
 
 col1, col2 = st.columns(2)
@@ -124,7 +144,7 @@ with col2:
 iterasi = st.slider("Jumlah Iterasi", 1, 50, 10)
 
 # ============================
-# HITUNG & GRAFIK
+# HITUNG
 # ============================
 if st.button("🔍 Hitung Akar"):
     try:
@@ -138,7 +158,6 @@ if st.button("🔍 Hitung Akar"):
             fa, fb = f(a), f(b)
             c = (a * fb - b * fa) / (fb - fa)
             fc = f(c)
-
             data.append([i+1, a, b, c, fc])
 
             if fa * fc < 0:
@@ -148,20 +167,18 @@ if st.button("🔍 Hitung Akar"):
 
         df = pd.DataFrame(data, columns=["Iterasi","a","b","c","f(c)"])
         st.dataframe(df, use_container_width=True)
+
         st.success(f"🎯 Akar hampiran = {c}")
 
-        # ===== GRAFIK AUTO SIZE =====
+        # ===== GRAFIK =====
         x = np.linspace(a0 - 2, b0 + 2, 500)
         y = [f(i) for i in x]
 
-        fig, ax = plt.subplots(figsize=(10, 5))   # ukuran ideal desktop
-        fig.set_dpi(120)
-
+        fig, ax = plt.subplots(figsize=(10,5))
         ax.plot(x, y)
         ax.axhline(0)
         ax.scatter(c, f(c))
         ax.set_title("Grafik f(x) dan Titik Akar")
-        ax.grid(True)
 
         st.pyplot(fig, use_container_width=True)
 
