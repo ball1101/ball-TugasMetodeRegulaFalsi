@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="📝 Kalkulator SPNL📐", layout="wide")
+st.set_page_config(page_title="📝 Kalkulator SPNL", layout="wide")
 
 # ============================
 # SIDEBAR
@@ -110,7 +110,7 @@ button[data-testid="collapsedControl"] svg {{
 # ============================
 # UI
 # ============================
-st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi 📐 </h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("### Input Persamaan")
