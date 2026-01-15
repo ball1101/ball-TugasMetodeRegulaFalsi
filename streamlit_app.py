@@ -110,7 +110,7 @@ button[data-testid="collapsedControl"] svg {{
 # ============================
 # UI
 # ============================
-st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi 📐 </h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'>Kalkulator SPNL – Metode Regula Falsi📐 </h1>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("### Input Persamaan")
